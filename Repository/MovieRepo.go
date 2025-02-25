@@ -126,3 +126,41 @@ func (r *MovieRepository) CreateMovie(c context.Context, movie Structs.Movie) (i
 	}
 	return id, nil
 }
+
+func (r *MovieRepository) UpdateMovie(c context.Context, movie Structs.Movie) error {
+	var categories []Structs.Category = movie.Category
+	sqlRequst := `UPDATE movies
+		SET movie_title=$2, director=$3, producer=$4, description=$5, realesed=$6
+		WHERE id = $1`
+	_, err := r.db.Exec(c, sqlRequst, movie.ID, movie.MovieTitle, movie.Director, movie.Producer, movie.Description, movie.Realesed)
+	if err != nil {
+		return err
+	}
+	sqlRequst = `DELETE FROM category_movie WHERE movie_ids = $1`
+	_, err = r.db.Exec(c, sqlRequst, movie.ID)
+	if err != nil {
+		return err
+	}
+	sqlRequst = `INSERT INTO category_movie (category_ids, movie_ids) VALUES($1, $2)`
+	for _, v := range categories {
+		_, err = r.db.Exec(c, sqlRequst, v.ID, movie.ID)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (r *MovieRepository) DeleteMovie(c context.Context, id int) error {
+	sqlRequst := `DELETE FROM category_movie WHERE movie_ids = $1`
+	_, err := r.db.Exec(c, sqlRequst, id)
+	if err != nil {
+		return err
+	}
+	sqlRequst = `DELETE FROM movies WHERE id = $1`
+	_, err = r.db.Exec(c, sqlRequst, id)
+	if err != nil {
+		return err
+	}
+	return nil
+}

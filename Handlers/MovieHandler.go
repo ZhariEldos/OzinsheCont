@@ -26,6 +26,15 @@ type requestForCreate struct {
 	Category    []Structs.Category
 	Cards       []string // TODO: make cards
 }
+type requestForUpdate struct {
+	MovieTitle  string
+	Director    string
+	Producer    string
+	Description string
+	Realesed    int
+	Category    []Structs.Category
+	Cards       []string // TODO: make cards
+}
 
 func (h *MovieHandler) FindAllMovie(c *gin.Context) {
 	Movies, err := h.MovieRepo.FindAllMovies(c)
@@ -71,4 +80,45 @@ func (h *MovieHandler) CreateMovie(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, Structs.NewApiError(err.Error(), "CreateMovie() {} (MovieRepo)"))
 	}
 	c.JSON(http.StatusOK, id)
+}
+
+func (h *MovieHandler) UpdateMovie(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, Structs.NewApiError("Id of movie have strange value or type of value", "UpdateMovie() {} (MovieHandler)"))
+		return
+	}
+	var request requestForUpdate
+	err = c.BindJSON(&request)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, Structs.NewApiError(err.Error(), "UpdateMovie() {} (MovieHandler)"))
+	}
+	movie := Structs.Movie{
+		ID:          id,
+		MovieTitle:  request.MovieTitle,
+		Director:    request.Director,
+		Producer:    request.Producer,
+		Description: request.Description,
+		Realesed:    request.Realesed,
+		Category:    request.Category,
+		Cards:       request.Cards,
+	}
+	err = h.MovieRepo.UpdateMovie(c, movie)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, Structs.NewApiError(err.Error(), "UpdateMovie() {} (MovieRepo)"))
+	}
+	c.Status(http.StatusOK)
+}
+
+func (h *MovieHandler) DeleteMovie(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, Structs.NewApiError("Id of movie have strange value or type of value", "UpdateMovie() {} (MovieHandler)"))
+	}
+	err = h.MovieRepo.DeleteMovie(c, id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, Structs.NewApiError(err.Error(), "UpdateMovie() {} (MovieRepo)"))
+	}
 }

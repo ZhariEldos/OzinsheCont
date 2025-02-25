@@ -21,9 +21,13 @@ func main() {
 	movieHandler := Handlers.NewMovieHandler(movieRepo)
 	categoryHandler := Handlers.NewCategoryHandler(categoryRepo)
 
+	// TODO: All http methods devide to another file
 	r.GET("/Movie", movieHandler.FindAllMovie)
 	r.GET("/Movie/:id", movieHandler.FindThisMovie)
+	r.PUT("/Movie/:id", movieHandler.UpdateMovie)
+	r.DELETE("/Movie/:id", movieHandler.DeleteMovie)
 	r.POST("/Movie", movieHandler.CreateMovie)
+
 	r.GET("/Category/:id", categoryHandler.FindCategoryByID)
 	r.GET("/Category", categoryHandler.FindAllCategories)
 	r.Run()
