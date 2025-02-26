@@ -17,7 +17,7 @@ func NewMovieHandler(MovieRepo *Repository.MovieRepository) *MovieHandler {
 	return &MovieHandler{MovieRepo: MovieRepo}
 }
 
-type requestForCreate struct {
+type requestForCreateMovie struct {
 	MovieTitle  string
 	Director    string
 	Producer    string
@@ -26,7 +26,7 @@ type requestForCreate struct {
 	Category    []Structs.Category
 	Cards       []string // TODO: make cards
 }
-type requestForUpdate struct {
+type requestForUpdateMovie struct {
 	MovieTitle  string
 	Director    string
 	Producer    string
@@ -61,7 +61,7 @@ func (h *MovieHandler) FindThisMovie(c *gin.Context) {
 }
 
 func (h *MovieHandler) CreateMovie(c *gin.Context) {
-	var request requestForCreate
+	var request requestForCreateMovie
 	err := c.BindJSON(&request)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, Structs.NewApiError(err.Error(), "CreateMovie() {} (MovieHandler)"))
@@ -89,7 +89,7 @@ func (h *MovieHandler) UpdateMovie(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, Structs.NewApiError("Id of movie have strange value or type of value", "UpdateMovie() {} (MovieHandler)"))
 		return
 	}
-	var request requestForUpdate
+	var request requestForUpdateMovie
 	err = c.BindJSON(&request)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, Structs.NewApiError(err.Error(), "UpdateMovie() {} (MovieHandler)"))

@@ -30,6 +30,9 @@ func main() {
 
 	r.GET("/Category/:id", categoryHandler.FindCategoryByID)
 	r.GET("/Category", categoryHandler.FindAllCategories)
+	r.POST("/Category", categoryHandler.CreateCategory)
+	r.PUT("/Category/:id", categoryHandler.UpdateCategory)
+	r.DELETE("/Category/:id", categoryHandler.DeleteCategory)
 	r.Run()
 }
 

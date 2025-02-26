@@ -16,7 +16,7 @@ func NewMovieRepository(conn *pgxpool.Pool) *MovieRepository {
 }
 
 func (r *MovieRepository) FindAllMovies(c context.Context) ([]Structs.Movie, error) {
-	sqlRequst := `SELECT
+	sqlRequest := `SELECT
 	m.id, 
 	m.movie_title,
 	m.director,
@@ -28,7 +28,7 @@ func (r *MovieRepository) FindAllMovies(c context.Context) ([]Structs.Movie, err
 	FROM movies m 
 	JOIN category_movie mc ON mc.movie_ids = m.id 
 	JOIN category c ON mc.category_ids = c.id`
-	rows, err := r.db.Query(c, sqlRequst)
+	rows, err := r.db.Query(c, sqlRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -62,7 +62,7 @@ func (r *MovieRepository) FindAllMovies(c context.Context) ([]Structs.Movie, err
 }
 
 func (r *MovieRepository) FindThisMovie(c context.Context, id int) (Structs.Movie, error) {
-	sqlRequst := `SELECT
+	sqlRequest := `SELECT
 	m.id, 
 	m.movie_title,
 	m.director,
@@ -75,7 +75,7 @@ func (r *MovieRepository) FindThisMovie(c context.Context, id int) (Structs.Movi
 	JOIN category_movie mc ON mc.movie_ids = m.id 
 	JOIN category c ON mc.category_ids = c.id
 	WHERE m.id = $1`
-	rows, err := r.db.Query(c, sqlRequst, id)
+	rows, err := r.db.Query(c, sqlRequest, id)
 	if err != nil {
 		return Structs.Movie{}, err
 	}
@@ -102,12 +102,12 @@ func (r *MovieRepository) FindThisMovie(c context.Context, id int) (Structs.Movi
 func (r *MovieRepository) CreateMovie(c context.Context, movie Structs.Movie) (int, error) {
 	var id int
 	var categories []Structs.Category = movie.Category
-	sqlRequst := `INSERT INTO movies
+	sqlRequest := `INSERT INTO movies
 		(movie_title, director, producer, description, realesed)
 		VALUES($1, $2, $3, $4, $5)
 		returning id`
 
-	rows := r.db.QueryRow(c, sqlRequst,
+	rows := r.db.QueryRow(c, sqlRequest,
 		movie.MovieTitle,
 		movie.Director,
 		movie.Producer,
@@ -116,12 +116,12 @@ func (r *MovieRepository) CreateMovie(c context.Context, movie Structs.Movie) (i
 	)
 	err := rows.Scan(&id)
 	if err != nil {
-		return 0, err
+		return -1, err
 	}
 	for _, v := range categories {
 		_, err = r.db.Exec(c, `INSERT INTO public.category_movie (category_ids, movie_ids) VALUES($1, $2)`, v.ID, id)
 		if err != nil {
-			return 0, err
+			return -1, err
 		}
 	}
 	return id, nil
@@ -129,21 +129,21 @@ func (r *MovieRepository) CreateMovie(c context.Context, movie Structs.Movie) (i
 
 func (r *MovieRepository) UpdateMovie(c context.Context, movie Structs.Movie) error {
 	var categories []Structs.Category = movie.Category
-	sqlRequst := `UPDATE movies
+	sqlRequest := `UPDATE movies
 		SET movie_title=$2, director=$3, producer=$4, description=$5, realesed=$6
 		WHERE id = $1`
-	_, err := r.db.Exec(c, sqlRequst, movie.ID, movie.MovieTitle, movie.Director, movie.Producer, movie.Description, movie.Realesed)
+	_, err := r.db.Exec(c, sqlRequest, movie.ID, movie.MovieTitle, movie.Director, movie.Producer, movie.Description, movie.Realesed)
 	if err != nil {
 		return err
 	}
-	sqlRequst = `DELETE FROM category_movie WHERE movie_ids = $1`
-	_, err = r.db.Exec(c, sqlRequst, movie.ID)
+	sqlRequest = `DELETE FROM category_movie WHERE movie_ids = $1`
+	_, err = r.db.Exec(c, sqlRequest, movie.ID)
 	if err != nil {
 		return err
 	}
-	sqlRequst = `INSERT INTO category_movie (category_ids, movie_ids) VALUES($1, $2)`
+	sqlRequest = `INSERT INTO category_movie (category_ids, movie_ids) VALUES($1, $2)`
 	for _, v := range categories {
-		_, err = r.db.Exec(c, sqlRequst, v.ID, movie.ID)
+		_, err = r.db.Exec(c, sqlRequest, v.ID, movie.ID)
 		if err != nil {
 			return err
 		}
@@ -152,13 +152,13 @@ func (r *MovieRepository) UpdateMovie(c context.Context, movie Structs.Movie) er
 }
 
 func (r *MovieRepository) DeleteMovie(c context.Context, id int) error {
-	sqlRequst := `DELETE FROM category_movie WHERE movie_ids = $1`
-	_, err := r.db.Exec(c, sqlRequst, id)
+	sqlRequest := `DELETE FROM category_movie WHERE movie_ids = $1`
+	_, err := r.db.Exec(c, sqlRequest, id)
 	if err != nil {
 		return err
 	}
-	sqlRequst = `DELETE FROM movies WHERE id = $1`
-	_, err = r.db.Exec(c, sqlRequst, id)
+	sqlRequest = `DELETE FROM movies WHERE id = $1`
+	_, err = r.db.Exec(c, sqlRequest, id)
 	if err != nil {
 		return err
 	}
