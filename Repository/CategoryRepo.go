@@ -15,7 +15,7 @@ func NewCategoryRepository(conn *pgxpool.Pool) *CategoryRepository {
 	return &CategoryRepository{db: conn}
 }
 
-func (r *CategoryRepository) FindCategoryByID(c context.Context, id int) (Structs.Category, error) {
+func (r *CategoryRepository) FindThisCategory(c context.Context, id int) (Structs.Category, error) {
 	var category Structs.Category
 	sqlRequest := `SELECT id, category_title FROM category WHERE id = $1`
 	rows := r.db.QueryRow(c, sqlRequest, id)

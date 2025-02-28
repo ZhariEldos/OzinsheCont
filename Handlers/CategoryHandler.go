@@ -25,19 +25,19 @@ type requestForUpdateCategory struct {
 	CategoryTitle string
 }
 
-func (h *CategoryHandler) FindCategoryByID(c *gin.Context) {
+func (h *CategoryHandler) FindThisCategory(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, Structs.NewApiError("Id of movie have strange value or type of value", "FindCategoryByID() {} (CategoryHandler)"))
+		c.JSON(http.StatusBadRequest, Structs.NewApiError("Id of movie have strange value or type of value", "FindThisCategory() {} (CategoryHandler)"))
 		return
 	}
-	category, err := h.CategoryRepo.FindCategoryByID(c, id)
+	category, err := h.CategoryRepo.FindThisCategory(c, id)
 	if (err != nil) && (category == Structs.Category{}) {
-		c.JSON(http.StatusNotFound, Structs.NewApiError("Category with this id not found", "FindCategoryByID() {} (CategoryRepo)"))
+		c.JSON(http.StatusNotFound, Structs.NewApiError("Category with this id not found", "FindThisCategory() {} (CategoryRepo)"))
 		return
 	} else if err != nil {
-		c.JSON(http.StatusInternalServerError, Structs.NewApiError(err.Error(), "FindCategoryByID() {} (CategoryRepo)"))
+		c.JSON(http.StatusInternalServerError, Structs.NewApiError(err.Error(), "FindThisCategory() {} (CategoryRepo)"))
 		return
 	}
 	c.JSON(http.StatusOK, category)

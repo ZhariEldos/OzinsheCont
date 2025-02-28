@@ -61,6 +61,7 @@ func (r *MovieRepository) FindAllMovies(c context.Context) ([]Structs.Movie, err
 	return Movies, nil
 }
 
+// WARN: If this function couldn't find any movies with this id, he will SEND MOVIE WITH ID = -1!
 func (r *MovieRepository) FindThisMovie(c context.Context, id int) (Structs.Movie, error) {
 	sqlRequest := `SELECT
 	m.id, 
@@ -77,7 +78,7 @@ func (r *MovieRepository) FindThisMovie(c context.Context, id int) (Structs.Movi
 	WHERE m.id = $1`
 	rows, err := r.db.Query(c, sqlRequest, id)
 	if err != nil {
-		return Structs.Movie{}, err
+		return Structs.Movie{ID: -1}, err
 	}
 	var Movie Structs.Movie
 	for rows.Next() {
@@ -92,9 +93,12 @@ func (r *MovieRepository) FindThisMovie(c context.Context, id int) (Structs.Movi
 			&cat.ID,
 			&cat.CategoryTitle)
 		if err != nil {
-			return Structs.Movie{}, err
+			return Structs.Movie{ID: -1}, err
 		}
 		Movie.Category = append(Movie.Category, cat)
+	}
+	if isThisANullComplexStruct(Movie) {
+		return Structs.Movie{ID: -1}, nil
 	}
 	return Movie, nil
 }
@@ -163,4 +167,11 @@ func (r *MovieRepository) DeleteMovie(c context.Context, id int) error {
 		return err
 	}
 	return nil
+}
+
+func isThisANullComplexStruct(Movie Structs.Movie) bool {
+	if (Movie.ID == 0) && (Movie.MovieTitle == "") && (Movie.Director == "") && (Movie.Producer == "") && (Movie.Description == "") && (Movie.Realesed == 0) && (Movie.Category == nil) && (Movie.Cards == nil) {
+		return true
+	}
+	return false
 }

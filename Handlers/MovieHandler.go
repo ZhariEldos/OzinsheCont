@@ -24,7 +24,7 @@ type requestForCreateMovie struct {
 	Description string
 	Realesed    int
 	Category    []Structs.Category
-	Cards       []string // TODO: make cards
+	Cards       []Structs.Cards
 }
 type requestForUpdateMovie struct {
 	MovieTitle  string
@@ -33,9 +33,10 @@ type requestForUpdateMovie struct {
 	Description string
 	Realesed    int
 	Category    []Structs.Category
-	Cards       []string // TODO: make cards
+	Cards       []Structs.Cards
 }
 
+// TODO: Make search for movie by params
 func (h *MovieHandler) FindAllMovie(c *gin.Context) {
 	Movies, err := h.MovieRepo.FindAllMovies(c)
 	if err != nil {
@@ -53,7 +54,10 @@ func (h *MovieHandler) FindThisMovie(c *gin.Context) {
 		return
 	}
 	Movie, err := h.MovieRepo.FindThisMovie(c, id)
-	if err != nil {
+	if Movie.ID == -1 {
+		c.JSON(http.StatusNotFound, Structs.NewApiError("Category with this id not found", "FindThisMovie() {} (MovieRepo)"))
+		return
+	} else if err != nil {
 		c.JSON(http.StatusInternalServerError, Structs.NewApiError(err.Error(), "FindThisMovie() {} (MovieRepo)"))
 		return
 	}

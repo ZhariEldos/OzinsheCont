@@ -1,5 +1,7 @@
 package Structs
 
+// TODO: Make more params (like: age of audience, url of picture and etc)
+// TODO: Make a genres
 type Movie struct {
 	ID          int
 	MovieTitle  string
@@ -8,5 +10,5 @@ type Movie struct {
 	Description string
 	Realesed    int
 	Category    []Category
-	Cards       []string // TODO: make cards
+	Cards       []Cards // TODO: Linking movies with cards
 }

@@ -16,23 +16,30 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	cardsRepo := Repository.NewCardsRepository(conn)
 	movieRepo := Repository.NewMovieRepository(conn)
 	categoryRepo := Repository.NewCategoryRepository(conn)
+	cardsHandler := Handlers.NewCardsHandler(cardsRepo)
 	movieHandler := Handlers.NewMovieHandler(movieRepo)
 	categoryHandler := Handlers.NewCategoryHandler(categoryRepo)
 
 	// TODO: All http methods devide to another file
+	// Movie:
 	r.GET("/Movie", movieHandler.FindAllMovie)
 	r.GET("/Movie/:id", movieHandler.FindThisMovie)
 	r.PUT("/Movie/:id", movieHandler.UpdateMovie)
 	r.DELETE("/Movie/:id", movieHandler.DeleteMovie)
 	r.POST("/Movie", movieHandler.CreateMovie)
-
-	r.GET("/Category/:id", categoryHandler.FindCategoryByID)
+	// Category:
+	r.GET("/Category/:id", categoryHandler.FindThisCategory)
 	r.GET("/Category", categoryHandler.FindAllCategories)
 	r.POST("/Category", categoryHandler.CreateCategory)
 	r.PUT("/Category/:id", categoryHandler.UpdateCategory)
 	r.DELETE("/Category/:id", categoryHandler.DeleteCategory)
+	// Cards:
+	r.GET("/Card", cardsHandler.FindAllCards)
+	r.GET("/Card/:id", cardsHandler.FindThisCard)
+
 	r.Run()
 }
 
