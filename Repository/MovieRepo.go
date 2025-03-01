@@ -56,7 +56,7 @@ func (r *MovieRepository) FindAllMovies(c context.Context) ([]Structs.Movie, err
 		bufMovies[mov.ID].Category = append(bufMovies[mov.ID].Category, cat)
 	}
 	for i := range Movies {
-		Movies[i].Category = bufMovies[i+1].Category
+		Movies[i].Category = bufMovies[Movies[i].ID].Category
 	}
 	return Movies, nil
 }

@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"ozinsheproject/Handlers"
+	"ozinsheproject/Methods"
 	"ozinsheproject/Repository"
 
 	"github.com/gin-gonic/gin"
@@ -23,22 +24,14 @@ func main() {
 	movieHandler := Handlers.NewMovieHandler(movieRepo)
 	categoryHandler := Handlers.NewCategoryHandler(categoryRepo)
 
+	// TODO: Make a docs
 	// TODO: All http methods devide to another file
 	// Movie:
-	r.GET("/Movie", movieHandler.FindAllMovie)
-	r.GET("/Movie/:id", movieHandler.FindThisMovie)
-	r.PUT("/Movie/:id", movieHandler.UpdateMovie)
-	r.DELETE("/Movie/:id", movieHandler.DeleteMovie)
-	r.POST("/Movie", movieHandler.CreateMovie)
+	Methods.InitMovieMethods(r, movieHandler)
 	// Category:
-	r.GET("/Category/:id", categoryHandler.FindThisCategory)
-	r.GET("/Category", categoryHandler.FindAllCategories)
-	r.POST("/Category", categoryHandler.CreateCategory)
-	r.PUT("/Category/:id", categoryHandler.UpdateCategory)
-	r.DELETE("/Category/:id", categoryHandler.DeleteCategory)
+	Methods.InitCategoryMethods(r, categoryHandler)
 	// Cards:
-	r.GET("/Card", cardsHandler.FindAllCards)
-	r.GET("/Card/:id", cardsHandler.FindThisCard)
+	Methods.InitCardsMethods(r, cardsHandler)
 
 	r.Run()
 }

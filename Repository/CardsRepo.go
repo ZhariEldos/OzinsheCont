@@ -46,3 +46,17 @@ func (r *CardsRepository) FindThisCard(c context.Context, id int) (Structs.Cards
 
 	return card, nil
 }
+
+func (r *CardsRepository) CreateCard(c context.Context, card Structs.Cards) (int, error) {
+	sqlRequest := `INSERT INTO public.cards
+		(card_title, url_picture)
+		VALUES($1, $2)
+		RETURNING id`
+	rows := r.db.QueryRow(c, sqlRequest, card.CardsTitle, card.URLPicture)
+	var id int
+	err := rows.Scan(&id)
+	if err != nil {
+		return 0, err
+	}
+	return id, nil
+}
