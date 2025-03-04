@@ -61,7 +61,7 @@ func (r *MovieRepository) FindAllMovies(c context.Context) ([]Structs.Movie, err
 	return Movies, nil
 }
 
-// WARN: If this function couldn't find any movies with this id, he will SEND MOVIE WITH ID = -1!
+// WARN: If this function couldn't find any movies with this id, it will SEND MOVIE WITH ID = -1!
 func (r *MovieRepository) FindThisMovie(c context.Context, id int) (Structs.Movie, error) {
 	sqlRequest := `SELECT
 	m.id, 

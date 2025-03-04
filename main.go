@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"ozinsheproject/Handlers"
 	"ozinsheproject/Methods"
 	"ozinsheproject/Repository"
@@ -25,13 +26,13 @@ func main() {
 	categoryHandler := Handlers.NewCategoryHandler(categoryRepo)
 
 	// TODO: Make a docs
-	// TODO: All http methods devide to another file
 	// Movie:
 	Methods.InitMovieMethods(r, movieHandler)
 	// Category:
 	Methods.InitCategoryMethods(r, categoryHandler)
 	// Cards:
 	Methods.InitCardsMethods(r, cardsHandler)
+	fmt.Println()
 
 	r.Run()
 }
