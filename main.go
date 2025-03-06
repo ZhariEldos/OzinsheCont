@@ -21,9 +21,11 @@ func main() {
 	cardsRepo := Repository.NewCardsRepository(conn)
 	movieRepo := Repository.NewMovieRepository(conn)
 	categoryRepo := Repository.NewCategoryRepository(conn)
+	imageRepo := Repository.NewImageRepository("image")
 	cardsHandler := Handlers.NewCardsHandler(cardsRepo)
 	movieHandler := Handlers.NewMovieHandler(movieRepo)
 	categoryHandler := Handlers.NewCategoryHandler(categoryRepo)
+	imageHandler := Handlers.NewImageHandler(imageRepo)
 
 	// TODO: Make a docs
 	// Movie:
@@ -32,6 +34,9 @@ func main() {
 	Methods.InitCategoryMethods(r, categoryHandler)
 	// Cards:
 	Methods.InitCardsMethods(r, cardsHandler)
+	// Image:
+	r.GET("/image/:folder/:name", imageHandler.FindThisImage)
+
 	fmt.Println()
 
 	r.Run()
