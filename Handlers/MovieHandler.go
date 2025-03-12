@@ -25,6 +25,7 @@ type requestForCreateMovie struct {
 	Realesed    int
 	Category    []Structs.Category
 	Cards       []Structs.Cards
+	URLPoster   string
 }
 type requestForUpdateMovie struct {
 	MovieTitle  string
@@ -34,6 +35,7 @@ type requestForUpdateMovie struct {
 	Realesed    int
 	Category    []Structs.Category
 	Cards       []Structs.Cards
+	URLPoster   string
 }
 
 // TODO: Make search for movie by params
@@ -78,6 +80,7 @@ func (h *MovieHandler) CreateMovie(c *gin.Context) {
 		Realesed:    request.Realesed,
 		Category:    request.Category,
 		Cards:       request.Cards,
+		URLPoster:   request.URLPoster,
 	}
 	id, err := h.MovieRepo.CreateMovie(c, movie)
 	if err != nil {
@@ -107,6 +110,7 @@ func (h *MovieHandler) UpdateMovie(c *gin.Context) {
 		Realesed:    request.Realesed,
 		Category:    request.Category,
 		Cards:       request.Cards,
+		URLPoster:   request.URLPoster,
 	}
 	err = h.MovieRepo.UpdateMovie(c, movie)
 	if err != nil {

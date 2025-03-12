@@ -15,8 +15,6 @@ func NewCardsRepository(conn *pgxpool.Pool) *CardsRepository {
 	return &CardsRepository{conn}
 }
 
-// TODO: Correct to CRUD
-
 func (r *CardsRepository) FindAllCards(c context.Context) ([]Structs.Cards, error) {
 	sqlRequest := `SELECT id, card_title, url_picture FROM cards`
 	rows, err := r.db.Query(c, sqlRequest)

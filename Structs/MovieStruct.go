@@ -11,4 +11,5 @@ type Movie struct {
 	Realesed    int
 	Category    []Category
 	Cards       []Cards // TODO: Linking movies with cards
+	URLPoster   string
 }

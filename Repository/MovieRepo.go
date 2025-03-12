@@ -23,6 +23,7 @@ func (r *MovieRepository) FindAllMovies(c context.Context) ([]Structs.Movie, err
 	m.producer,
 	m.description,
 	m.realesed,
+	m.urlposter,
 	c.id,
 	c.category_title
 	FROM movies m 
@@ -44,6 +45,7 @@ func (r *MovieRepository) FindAllMovies(c context.Context) ([]Structs.Movie, err
 			&mov.Producer,
 			&mov.Description,
 			&mov.Realesed,
+			&mov.URLPoster,
 			&cat.ID,
 			&cat.CategoryTitle)
 		if err != nil {
@@ -70,6 +72,7 @@ func (r *MovieRepository) FindThisMovie(c context.Context, id int) (Structs.Movi
 	m.producer,
 	m.description,
 	m.realesed,
+	m.urlposter,
 	c.id,
 	c.category_title
 	FROM movies m 
@@ -90,6 +93,7 @@ func (r *MovieRepository) FindThisMovie(c context.Context, id int) (Structs.Movi
 			&Movie.Producer,
 			&Movie.Description,
 			&Movie.Realesed,
+			&Movie.URLPoster,
 			&cat.ID,
 			&cat.CategoryTitle)
 		if err != nil {
@@ -107,8 +111,8 @@ func (r *MovieRepository) CreateMovie(c context.Context, movie Structs.Movie) (i
 	var id int
 	var categories []Structs.Category = movie.Category
 	sqlRequest := `INSERT INTO movies
-		(movie_title, director, producer, description, realesed)
-		VALUES($1, $2, $3, $4, $5)
+		(movie_title, director, producer, description, realesed, urlposter)
+		VALUES($1, $2, $3, $4, $5, $6)
 		returning id`
 
 	rows := r.db.QueryRow(c, sqlRequest,
@@ -117,6 +121,7 @@ func (r *MovieRepository) CreateMovie(c context.Context, movie Structs.Movie) (i
 		movie.Producer,
 		movie.Description,
 		movie.Realesed,
+		movie.URLPoster,
 	)
 	err := rows.Scan(&id)
 	if err != nil {
@@ -134,9 +139,9 @@ func (r *MovieRepository) CreateMovie(c context.Context, movie Structs.Movie) (i
 func (r *MovieRepository) UpdateMovie(c context.Context, movie Structs.Movie) error {
 	var categories []Structs.Category = movie.Category
 	sqlRequest := `UPDATE movies
-		SET movie_title=$2, director=$3, producer=$4, description=$5, realesed=$6
+		SET movie_title=$2, director=$3, producer=$4, description=$5, realesed=$6, urlposter=$7
 		WHERE id = $1`
-	_, err := r.db.Exec(c, sqlRequest, movie.ID, movie.MovieTitle, movie.Director, movie.Producer, movie.Description, movie.Realesed)
+	_, err := r.db.Exec(c, sqlRequest, movie.ID, movie.MovieTitle, movie.Director, movie.Producer, movie.Description, movie.Realesed, movie.URLPoster)
 	if err != nil {
 		return err
 	}

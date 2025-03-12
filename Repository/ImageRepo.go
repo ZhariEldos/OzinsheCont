@@ -2,7 +2,12 @@ package Repository
 
 import (
 	"fmt"
+	"mime/multipart"
 	"os"
+	"path/filepath"
+
+	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 type ImageRepository struct {
@@ -19,4 +24,14 @@ func (r *ImageRepository) FindThisImage(name string, folder string) ([]byte, err
 		return nil, err
 	}
 	return byteFile, nil
+}
+
+func (r *ImageRepository) CreateImage(c *gin.Context, image *multipart.FileHeader, folder string) (name string, err error) {
+	filename := fmt.Sprintf("%s%s", uuid.NewString(), filepath.Ext(image.Filename))
+	filepath := fmt.Sprintf("%s/%s/%s", r.filepath, folder, filename)
+	err = c.SaveUploadedFile(image, filepath)
+	if err != nil {
+		return "", err
+	}
+	return filename, nil
 }
