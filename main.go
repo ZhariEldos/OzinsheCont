@@ -35,8 +35,7 @@ func main() {
 	// Cards:
 	Methods.InitCardsMethods(r, cardsHandler)
 	// Image:
-	r.GET("/image/:folder/:name", imageHandler.FindThisImage)
-	r.POST("/image/:folder", imageHandler.CreateImage)
+	Methods.InitImageMethods(r, imageHandler)
 
 	fmt.Println()
 

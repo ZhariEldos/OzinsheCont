@@ -2,8 +2,10 @@ package Repository
 
 import (
 	"context"
+	"fmt"
 	"ozinsheproject/Structs"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -64,7 +66,7 @@ func (r *MovieRepository) FindAllMovies(c context.Context) ([]Structs.Movie, err
 }
 
 // WARN: If this function couldn't find any movies with this id, it will SEND MOVIE WITH ID = -1!
-func (r *MovieRepository) FindThisMovie(c context.Context, id int) (Structs.Movie, error) {
+func (r *MovieRepository) FindMovieByID(c context.Context, id int) (Structs.Movie, error) {
 	sqlRequest := `SELECT
 	m.id, 
 	m.movie_title,
@@ -105,6 +107,95 @@ func (r *MovieRepository) FindThisMovie(c context.Context, id int) (Structs.Movi
 		return Structs.Movie{ID: -1}, nil
 	}
 	return Movie, nil
+}
+
+func (r *MovieRepository) FindMovieByParams(c context.Context, params Structs.FilmSearchParams) ([]Structs.Movie, error) {
+	sqlRequest := `SELECT
+	m.id
+	FROM movies m 
+	JOIN category_movie mc ON mc.movie_ids = m.id 
+	JOIN category c ON mc.category_ids = c.id`
+	whereOrAnd := "where"
+	PgxParams := pgx.NamedArgs{}
+	if params.MovieTitle != "" {
+		sqlRequest = fmt.Sprintf("%s %s m.movie_title ilike @search", sqlRequest, whereOrAnd)
+		PgxParams["search"] = fmt.Sprintf("%%%s%%", params.MovieTitle)
+		whereOrAnd = "and"
+	}
+	if params.Categories != nil {
+		for _, cat := range params.Categories {
+			sqlRequest = fmt.Sprintf("%s %s c.id = %d", sqlRequest, whereOrAnd, cat.ID)
+			whereOrAnd = "or"
+		}
+		whereOrAnd = "and"
+	}
+	rowsMovies, err := r.db.Query(c, sqlRequest, PgxParams)
+	if err != nil {
+		return nil, err
+	}
+	var MoviesIDs []int
+	bufMoviesIDs := make(map[int]int)
+	for rowsMovies.Next() {
+		var id int
+		err := rowsMovies.Scan(&id)
+		if err != nil {
+			return nil, err
+		}
+		if _, exist := bufMoviesIDs[id]; !exist {
+			bufMoviesIDs[id] = id
+			MoviesIDs = append(MoviesIDs, id)
+		}
+	}
+	sqlRequest = `SELECT
+	m.id,
+	m.movie_title,
+	m.director,
+	m.producer,
+	m.description,
+	m.realesed,
+	m.urlposter,
+	c.id,
+	c.category_title
+	FROM movies m 
+	JOIN category_movie mc ON mc.movie_ids = m.id 
+	JOIN category c ON mc.category_ids = c.id`
+	whereOrAnd = "where"
+	for _, id := range MoviesIDs {
+		sqlRequest = fmt.Sprintf("%s %s m.id = %d", sqlRequest, whereOrAnd, id)
+		whereOrAnd = "or"
+	}
+	rows, err := r.db.Query(c, sqlRequest, PgxParams)
+	if err != nil {
+		return nil, err
+	}
+	var Movies []Structs.Movie
+	bufMovies := make(map[int]*Structs.Movie)
+	for rows.Next() {
+		var mov Structs.Movie
+		var cat Structs.Category
+		err = rows.Scan(
+			&mov.ID,
+			&mov.MovieTitle,
+			&mov.Director,
+			&mov.Producer,
+			&mov.Description,
+			&mov.Realesed,
+			&mov.URLPoster,
+			&cat.ID,
+			&cat.CategoryTitle)
+		if err != nil {
+			return nil, err
+		}
+		if _, exist := bufMovies[mov.ID]; !exist {
+			bufMovies[mov.ID] = &mov
+			Movies = append(Movies, mov)
+		}
+		bufMovies[mov.ID].Category = append(bufMovies[mov.ID].Category, cat)
+	}
+	for i := range Movies {
+		Movies[i].Category = bufMovies[Movies[i].ID].Category
+	}
+	return Movies, nil
 }
 
 func (r *MovieRepository) CreateMovie(c context.Context, movie Structs.Movie) (int, error) {

@@ -48,22 +48,37 @@ func (h *MovieHandler) FindAllMovie(c *gin.Context) {
 	c.JSON(http.StatusOK, Movies)
 }
 
-func (h *MovieHandler) FindThisMovie(c *gin.Context) {
+func (h *MovieHandler) FindMovieByID(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, Structs.NewApiError("Id of movie have strange value or type of value", "FindThisMovie() {} (MovieHandler)"))
+		c.JSON(http.StatusBadRequest, Structs.NewApiError("Id of movie have strange value or type of value", "FindMovieByID() {} (MovieHandler)"))
 		return
 	}
-	Movie, err := h.MovieRepo.FindThisMovie(c, id)
+	Movie, err := h.MovieRepo.FindMovieByID(c, id)
 	if Movie.ID == -1 {
-		c.JSON(http.StatusNotFound, Structs.NewApiError("Category with this id not found", "FindThisMovie() {} (MovieRepo)"))
+		c.JSON(http.StatusNotFound, Structs.NewApiError("Category with this id not found", "FindMovieByID() {} (MovieRepo)"))
 		return
 	} else if err != nil {
-		c.JSON(http.StatusInternalServerError, Structs.NewApiError(err.Error(), "FindThisMovie() {} (MovieRepo)"))
+		c.JSON(http.StatusInternalServerError, Structs.NewApiError(err.Error(), "FindMovieByID() {} (MovieRepo)"))
 		return
 	}
 	c.JSON(http.StatusOK, Movie)
+}
+
+func (h *MovieHandler) FindMovieByParams(c *gin.Context) {
+	var request Structs.FilmSearchParams
+	err := c.BindJSON(&request)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, Structs.NewApiError("Form of search is incorrect", "FindMovieByParams() {} (MovieHandler)"))
+		return
+	}
+	movies, err := h.MovieRepo.FindMovieByParams(c, request)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+	c.JSON(http.StatusOK, movies)
 }
 
 func (h *MovieHandler) CreateMovie(c *gin.Context) {
