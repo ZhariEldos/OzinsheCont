@@ -7,10 +7,19 @@ import (
 	"ozinsheproject/Methods"
 	"ozinsheproject/Repository"
 
+	"ozinsheproject/docs"
+
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgxpool"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
+// @title           Ozinshe API
+// @version         1.0
+// @description     API for search movies by tags and publish them
+
+// @host      localhost:8080
 func main() {
 	r := gin.Default()
 
@@ -36,6 +45,9 @@ func main() {
 	Methods.InitCardsMethods(r, cardsHandler)
 	// Image:
 	Methods.InitImageMethods(r, imageHandler)
+
+	docs.SwaggerInfo.BasePath = "/"
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	fmt.Println()
 

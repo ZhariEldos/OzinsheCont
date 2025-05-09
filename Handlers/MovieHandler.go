@@ -39,6 +39,14 @@ type requestForUpdateMovie struct {
 }
 
 // TODO: Make search for movie by params
+
+// @Summary		Show all movies
+// @Description Show all movies in database and show their data
+// @Tags		Movies
+// @Produce		json
+// @Success		200 {object} []Structs.Movie
+// @Failure		500 {object} Structs.ApiError
+// @Router		/Movie [get]
 func (h *MovieHandler) FindAllMovie(c *gin.Context) {
 	Movies, err := h.MovieRepo.FindAllMovies(c)
 	if err != nil {
@@ -48,6 +56,16 @@ func (h *MovieHandler) FindAllMovie(c *gin.Context) {
 	c.JSON(http.StatusOK, Movies)
 }
 
+// @Summary		Find movie by ID
+// @Description Find movie from DataBase by ID
+// @Tags		Movies
+// @Params		id path int true "Movie ID"
+// @Produce		json
+// @Success		200 {object} Structs.Movie
+// @Failure		500 {object} Structs.ApiError
+// @Failure		400 {object} Structs.ApiError
+// @Failure		404 {object} Structs.ApiError
+// @Router		/Movie/{id} [get]
 func (h *MovieHandler) FindMovieByID(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
@@ -66,6 +84,15 @@ func (h *MovieHandler) FindMovieByID(c *gin.Context) {
 	c.JSON(http.StatusOK, Movie)
 }
 
+// @Summary		(WIP) Search a movie
+// @Description Search a movie by params, that you bind in json request
+// @Tags		Movies
+// @Accept		json
+// @Produce		json
+// @Success		200 {object} Structs.Movie
+// @Failure		500 {object} Structs.ApiError
+// @Failure		400 {object} Structs.ApiError
+// @Router		/Movie/search [get]
 func (h *MovieHandler) FindMovieByParams(c *gin.Context) {
 	var request Structs.FilmSearchParams
 	err := c.BindJSON(&request)
@@ -81,6 +108,14 @@ func (h *MovieHandler) FindMovieByParams(c *gin.Context) {
 	c.JSON(http.StatusOK, movies)
 }
 
+// @Summary		Create a movie
+// @Description Create new movie and put its to database
+// @Tags		Movies
+// @Accept		json
+// @Produce		json
+// @Success		200 {object} int
+// @Failure		400 {object} Structs.ApiError
+// @Router		/Movie [post]
 func (h *MovieHandler) CreateMovie(c *gin.Context) {
 	var request requestForCreateMovie
 	err := c.BindJSON(&request)
@@ -104,6 +139,16 @@ func (h *MovieHandler) CreateMovie(c *gin.Context) {
 	c.JSON(http.StatusOK, id)
 }
 
+// @Summary		Update existing movie
+// @Description Update existing movie and put it to database
+// @Tags		Movies
+// @Params		id path int true "Movie ID"
+// @Accept		json
+// @Produce		json
+// @Success		200
+// @Failure		400 {object} Structs.ApiError
+// @Failure		500 {object} Structs.ApiError
+// @Router		/Movie/{id} [put]
 func (h *MovieHandler) UpdateMovie(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
@@ -134,6 +179,16 @@ func (h *MovieHandler) UpdateMovie(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 
+// @Summary		Delete a movie
+// @Description Delete existing movie from database
+// @Tags		Movies
+// @Params		id path int true "Movie ID"
+// @Accept		json
+// @Produce		json
+// @Success		200
+// @Failure		400 {object} Structs.ApiError
+// @Failure		500 {object} Structs.ApiError
+// @Router		/Movie/{id} [delete]
 func (h *MovieHandler) DeleteMovie(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)

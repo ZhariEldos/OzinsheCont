@@ -1,0 +1,183 @@
+definitions:
+  Structs.ApiError:
+    properties:
+      error:
+        type: string
+      where:
+        type: string
+    type: object
+  Structs.Cards:
+    properties:
+      cardsTitle:
+        type: string
+      id:
+        type: integer
+      urlpicture:
+        type: string
+    type: object
+  Structs.Category:
+    properties:
+      categoryTitle:
+        type: string
+      id:
+        type: integer
+    type: object
+  Structs.Movie:
+    properties:
+      cards:
+        description: 'TODO: Linking movies with cards'
+        items:
+          $ref: '#/definitions/Structs.Cards'
+        type: array
+      category:
+        items:
+          $ref: '#/definitions/Structs.Category'
+        type: array
+      description:
+        type: string
+      director:
+        type: string
+      id:
+        type: integer
+      movieTitle:
+        type: string
+      producer:
+        type: string
+      realesed:
+        type: integer
+      urlposter:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API for search movies by tags and publish them
+  title: Ozinshe API
+  version: "1.0"
+paths:
+  /Movie:
+    get:
+      description: Show all movies in database and show their data
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/Structs.Movie'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Structs.ApiError'
+      summary: Show all movies
+      tags:
+      - Movies
+    post:
+      consumes:
+      - application/json
+      description: Create new movie and put its to database
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Structs.ApiError'
+      summary: Create a movie
+      tags:
+      - Movies
+  /Movie/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete existing movie from database
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Structs.ApiError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Structs.ApiError'
+      summary: Delete a movie
+      tags:
+      - Movies
+    get:
+      description: Find movie from DataBase by ID
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Structs.Movie'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Structs.ApiError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/Structs.ApiError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Structs.ApiError'
+      summary: Find movie by ID
+      tags:
+      - Movies
+    put:
+      consumes:
+      - application/json
+      description: Update existing movie and put it to database
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Structs.ApiError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Structs.ApiError'
+      summary: Update existing movie
+      tags:
+      - Movies
+  /Movie/search:
+    get:
+      consumes:
+      - application/json
+      description: Search a movie by params, that you bind in json request
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Structs.Movie'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Structs.ApiError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Structs.ApiError'
+      summary: (WIP) Search a movie
+      tags:
+      - Movies
+swagger: "2.0"
