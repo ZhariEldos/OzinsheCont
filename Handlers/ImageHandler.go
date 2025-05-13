@@ -23,6 +23,15 @@ func NewImageHandler(ImageRepo *Repository.ImageRepository) *ImageHandler {
 	return &ImageHandler{ImageRepo: ImageRepo}
 }
 
+// @Summary		Find image
+// @Description Find the image in server
+// @Param		folder path string true "Path to picture"
+// @Param		name path string true "Picture name"
+// @Tags		Images
+// @Produce		png
+// @Success		200 {object} []byte "PosterPNG, PosterJP(E)G"
+// @Failure		404 {object} Structs.ApiError
+// @Router		/image/{folder}/{name} [get]
 func (h *ImageHandler) FindThisImage(c *gin.Context) {
 	name := c.Param("name")
 	folder := c.Param("folder")
@@ -36,6 +45,16 @@ func (h *ImageHandler) FindThisImage(c *gin.Context) {
 	c.Data(http.StatusOK, "application/octet-stream", image)
 }
 
+// @Summary		Create image
+// @Description Put image to server
+// @Param		folder path string true "Path to picture"
+// @Tags		Images
+// @Accept		mpfd
+// @Produce		json
+// @Success		200 {object} string "Name of new image"
+// @Failure		500 {object} Structs.ApiError
+// @Failure		400 {object} Structs.ApiError
+// @Router		/image/{folder} [post]
 func (h *ImageHandler) CreateImage(c *gin.Context) {
 	var request createImageRequest
 	folder := c.Param("folder")

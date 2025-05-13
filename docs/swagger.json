@@ -407,6 +407,95 @@
                     }
                 }
             }
+        },
+        "/image/{folder}": {
+            "post": {
+                "description": "Put image to server",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Images"
+                ],
+                "summary": "Create image",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Path to picture",
+                        "name": "folder",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Name of new image",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/Structs.ApiError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/Structs.ApiError"
+                        }
+                    }
+                }
+            }
+        },
+        "/image/{folder}/{name}": {
+            "get": {
+                "description": "Find the image in server",
+                "produces": [
+                    "image/png"
+                ],
+                "tags": [
+                    "Images"
+                ],
+                "summary": "Find image",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Path to picture",
+                        "name": "folder",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Picture name",
+                        "name": "name",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "PosterPNG, PosterJP(E)G",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/Structs.ApiError"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {

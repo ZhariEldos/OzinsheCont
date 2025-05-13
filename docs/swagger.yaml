@@ -320,4 +320,63 @@ paths:
       summary: (WIP) Search a movie
       tags:
       - Movies
+  /image/{folder}:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Put image to server
+      parameters:
+      - description: Path to picture
+        in: path
+        name: folder
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Name of new image
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Structs.ApiError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Structs.ApiError'
+      summary: Create image
+      tags:
+      - Images
+  /image/{folder}/{name}:
+    get:
+      description: Find the image in server
+      parameters:
+      - description: Path to picture
+        in: path
+        name: folder
+        required: true
+        type: string
+      - description: Picture name
+        in: path
+        name: name
+        required: true
+        type: string
+      produces:
+      - image/png
+      responses:
+        "200":
+          description: PosterPNG, PosterJP(E)G
+          schema:
+            items:
+              type: integer
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/Structs.ApiError'
+      summary: Find image
+      tags:
+      - Images
 swagger: "2.0"
