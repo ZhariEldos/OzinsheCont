@@ -59,7 +59,7 @@ func (h *MovieHandler) FindAllMovie(c *gin.Context) {
 // @Summary		Find movie by ID
 // @Description Find movie from DataBase by ID
 // @Tags		Movies
-// @Params		id path int true "Movie ID"
+// @Param		id path int true "Movie ID"
 // @Produce		json
 // @Success		200 {object} Structs.Movie
 // @Failure		500 {object} Structs.ApiError
@@ -113,7 +113,7 @@ func (h *MovieHandler) FindMovieByParams(c *gin.Context) {
 // @Tags		Movies
 // @Accept		json
 // @Produce		json
-// @Success		200 {object} int
+// @Success		200 {object} int "ID new movie"
 // @Failure		400 {object} Structs.ApiError
 // @Router		/Movie [post]
 func (h *MovieHandler) CreateMovie(c *gin.Context) {
@@ -142,7 +142,7 @@ func (h *MovieHandler) CreateMovie(c *gin.Context) {
 // @Summary		Update existing movie
 // @Description Update existing movie and put it to database
 // @Tags		Movies
-// @Params		id path int true "Movie ID"
+// @Param		id path int true "Movie ID"
 // @Accept		json
 // @Produce		json
 // @Success		200
@@ -182,7 +182,7 @@ func (h *MovieHandler) UpdateMovie(c *gin.Context) {
 // @Summary		Delete a movie
 // @Description Delete existing movie from database
 // @Tags		Movies
-// @Params		id path int true "Movie ID"
+// @Param		id path int true "Movie ID"
 // @Accept		json
 // @Produce		json
 // @Success		200

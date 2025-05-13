@@ -55,6 +55,128 @@ info:
   title: Ozinshe API
   version: "1.0"
 paths:
+  /Category:
+    get:
+      description: Find all categories from DataBase by ID
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/Structs.Category'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Structs.ApiError'
+      summary: Find all categories
+      tags:
+      - Categories
+    post:
+      consumes:
+      - application/json
+      description: Create new category and put it to database
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ID new category
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Structs.ApiError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Structs.ApiError'
+      summary: Create a category
+      tags:
+      - Categories
+  /Category/{id}:
+    delete:
+      description: Delete category from database
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Structs.ApiError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Structs.ApiError'
+      summary: Delete category
+      tags:
+      - Categories
+    get:
+      description: Find category from DataBase by ID
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Structs.Category'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Structs.ApiError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/Structs.ApiError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Structs.ApiError'
+      summary: Find category by ID
+      tags:
+      - Categories
+    put:
+      consumes:
+      - application/json
+      description: Update category information from database
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Structs.ApiError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Structs.ApiError'
+      summary: Update category info
+      tags:
+      - Categories
   /Movie:
     get:
       description: Show all movies in database and show their data
@@ -82,7 +204,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: OK
+          description: ID new movie
           schema:
             type: integer
         "400":
@@ -97,6 +219,12 @@ paths:
       consumes:
       - application/json
       description: Delete existing movie from database
+      parameters:
+      - description: Movie ID
+        in: path
+        name: id
+        required: true
+        type: integer
       produces:
       - application/json
       responses:
@@ -115,6 +243,12 @@ paths:
       - Movies
     get:
       description: Find movie from DataBase by ID
+      parameters:
+      - description: Movie ID
+        in: path
+        name: id
+        required: true
+        type: integer
       produces:
       - application/json
       responses:
@@ -141,6 +275,12 @@ paths:
       consumes:
       - application/json
       description: Update existing movie and put it to database
+      parameters:
+      - description: Movie ID
+        in: path
+        name: id
+        required: true
+        type: integer
       produces:
       - application/json
       responses:
