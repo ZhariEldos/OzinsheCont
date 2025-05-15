@@ -55,6 +55,130 @@ info:
   title: Ozinshe API
   version: "1.0"
 paths:
+  /Card:
+    get:
+      description: Show all cards in database and show their data
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/Structs.Cards'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Structs.ApiError'
+      summary: Show all cards
+      tags:
+      - Cards
+    post:
+      consumes:
+      - application/json
+      description: Create new card and put its to database
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ID new card
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Structs.ApiError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Structs.ApiError'
+      summary: Create a card
+      tags:
+      - Cards
+  /Card/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete existing card from database
+      parameters:
+      - description: Card ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Structs.ApiError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Structs.ApiError'
+      summary: Delete a card
+      tags:
+      - Cards
+    get:
+      description: Find card from DataBase by ID
+      parameters:
+      - description: Card ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Structs.Cards'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Structs.ApiError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/Structs.ApiError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Structs.ApiError'
+      summary: Find card by ID
+      tags:
+      - Cards
+    put:
+      consumes:
+      - application/json
+      description: Update existing card and put it to database
+      parameters:
+      - description: Card ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Structs.ApiError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Structs.ApiError'
+      summary: Update existing card
+      tags:
+      - Cards
   /Category:
     get:
       description: Find all categories from DataBase by ID
