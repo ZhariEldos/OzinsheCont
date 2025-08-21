@@ -55,7 +55,7 @@ func main() {
 }
 
 func connectToDB() (*pgxpool.Pool, error) {
-	conn, err := pgxpool.New(context.Background(), "postgresql://postgres:100100100AaAa@localhost:5432/ozinshe")
+	conn, err := pgxpool.New(context.Background(), "postgresql://ozinshe_user:sc4hGncGEXhWiHhcXJmtC4b8wPotcOIY@dpg-d2jklf3ipnbc73ba0icg-a/ozinshe")
 	if err != nil {
 		return nil, err
 	}
